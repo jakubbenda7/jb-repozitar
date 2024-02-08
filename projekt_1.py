@@ -33,7 +33,6 @@ garpike and stingray are also present.\n'''
 ]
 oddelovac = "----------------------------------------"
 registrovani_uzivatele = {"bob" : "123", "ann" : "pass123", "mike" : "password123", "liz" : "pass123"}
-
 prihlasovaci_jmeno = input("Zadejte Vaše přihlašovací jméno:")
 heslo = input("Zadejte Vaše přihlašovací heslo:")
 if registrovani_uzivatele.get(prihlasovaci_jmeno) == heslo:
@@ -46,14 +45,17 @@ else:
 for i, text in enumerate(TEXTS, start=1):
     print(f"Text {i}: {text}")
 
-vyber = int(input("Zadejte číslo textu, který jste si vybral:"))
-
-if vyber <1 or vyber > len(TEXTS):
+vyber = input("Zadejte číslo textu, který jste si vybral:")
+if not vyber.isdigit():
+    print ("Zadali jste neplatné číslo, program bude ukončen!")
+    quit()
+vyber = int(vyber)
+if vyber < 1 or vyber > len(TEXTS):
     print ("Zadali jste neplatné číslo, program bude ukončen!")
     quit()
     
 vybrany_text = TEXTS[vyber - 1]
-
+max_cetnost= None
 def sloupcovy_graf(text):
     delka_slov = [len(slovo) for slovo in text]
     
@@ -64,13 +66,15 @@ def sloupcovy_graf(text):
         else:
             udaje_o_delce[delka] = 1    
     max_delka = max(udaje_o_delce.keys())
+    global max_cetnost
+    max_cetnost = max(udaje_o_delce.values())
     graf = ""    
     for i in range(1, max_delka + 1):
         cetnost = udaje_o_delce.get(i, 0)
-        graf += f"{i}| {'*' * cetnost} | {cetnost}\n"
-    
+        graf += f"{i} \t| {'*' * cetnost:<{max_cetnost}}\t| {cetnost}\n"
+        
     return graf
-
+    
 slova = [slovo.strip(". , : ;") for slovo in vybrany_text.split()]
 slova_psana_s_prvnim_velkym_pismenem = [slovo for slovo in slova if slovo.istitle()]
 slova_psana_velkymi_pismeny = [slovo for slovo in slova if slovo.isupper() and slovo.isalpha()]
@@ -87,9 +91,11 @@ print(f"Vybraný text obsahuje {len(slova_psana_malymi_pismeny)} slov psaných v
 print(f"Vybraný text obsahuje {len(soucet)} čísel.")
 print(f"Součet čísel ve vybraném textu je: {celkova_suma}")
 print(oddelovac)
-print("POČ|", "  VÝSKYT", "|ČÍSLEM")
+if max_cetnost > 13:
+    print("POČ \t|  VÝSKYT\t\t|ČÍSLEM")
+else:
+    print("POČ \t|  VÝSKYT\t|ČÍSLEM")
 print(oddelovac)
 print(graf_textu)
-
 
     
